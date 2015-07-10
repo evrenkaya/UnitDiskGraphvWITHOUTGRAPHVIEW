@@ -7,10 +7,13 @@ public final class Edge
 	
 	private boolean intersecting;
 	
-	public Edge(Vertex first, Vertex second)
+	private double weight;
+	
+	public Edge(Vertex first, Vertex second, double weight)
 	{
 		this.first = first;
 		this.second = second;
+		this.weight = weight;
 		intersecting = false;
 	}
 	
@@ -20,6 +23,8 @@ public final class Edge
 	
 	public Vertex getFirst() { return first; }
 	public Vertex getSecond() { return second; }
+	
+	public double getWeight() { return weight; }
 	
 	public boolean equals(Object o)
 	{

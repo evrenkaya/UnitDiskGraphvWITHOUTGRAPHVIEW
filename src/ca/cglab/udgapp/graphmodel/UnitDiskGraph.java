@@ -1,6 +1,7 @@
 package ca.cglab.udgapp.graphmodel;
 
 import java.awt.geom.Line2D;
+import java.awt.geom.Path2D;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -8,12 +9,15 @@ public final class UnitDiskGraph
 {
 	private final ArrayList<Vertex> vertices;
 	private final ArrayList<Edge> edges;
+	private final ArrayList<Edge> freeEdges;
+	private final ArrayList<Path2D> allPaths;
 	
 	// Random number generator for vertex positions
 	private final Random random;
 	
 	private int numVertices;
 	private int numEdges;
+	private int numSuperFreeEdges;
 	
 	// Current distance threshold
 	private double maxDistance;
@@ -26,6 +30,8 @@ public final class UnitDiskGraph
 		
 		vertices = new ArrayList<Vertex>(numVertices);
 		edges = new ArrayList<Edge>(numVertices);
+		freeEdges = new ArrayList<Edge>(numVertices);
+		allPaths = new ArrayList<Path2D>();
 		
 		random = new Random();
 	}
@@ -38,6 +44,7 @@ public final class UnitDiskGraph
 		{
 			Vertex v = new Vertex(random.nextDouble(), random.nextDouble());
 			vertices.add(v);
+			//System.out.println(v);
 		}
 	}
 	
@@ -53,17 +60,21 @@ public final class UnitDiskGraph
 			for(int j = i + 1; j < numVertices; j++)
 			{
 				Vertex second = vertices.get(j);
-				if(distanceBetweenVertices(first, second) <= maxDistance)
+				double distance = distanceBetweenVertices(first, second);
+				if(distance <= maxDistance)
 				{
 					// Make both vertices see each other as neighbors
 					first.addNeighbour(second);
 					second.addNeighbour(first);
-					edges.add(new Edge(first, second));
+					//System.out.println("Edge: ");
+					//System.out.println(first.toString() + " " + second.toString());
+					edges.add(new Edge(first, second, distance));
 					numEdges++;
 				}
 			}
 		}
-		System.out.println("Edges: " + numEdges);
+		//System.out.println("Edges: " + numEdges);
+
 	}
 	// Removed all vertices and edges in the graph
 	public void removeAllVertices()
@@ -80,8 +91,8 @@ public final class UnitDiskGraph
 			vertices.get(i).getNeighbours().clear();
 		}
 		edges.clear();
-		numEdges = 0;
-		numIntersectingEdges = 0;
+		freeEdges.clear();
+		numEdges = numIntersectingEdges = numSuperFreeEdges = 0;
 	}
 	
 	// Helper method
@@ -130,7 +141,102 @@ public final class UnitDiskGraph
 				numIntersectingEdges++;
 				edges.get(i).setIntersecting(false);
 			}
+			else
+			{
+				freeEdges.add(edges.get(i));
+			}
 		}
+		
+		determineSuperFreeEdges();
+	}
+	
+	public void determineSuperFreeEdges()
+	{
+		Path2D path = new Path2D.Double();
+		numSuperFreeEdges = 0;
+		for(int i = 0; i < freeEdges.size(); i++)
+		{
+			Edge freeEdge = freeEdges.get(i);
+			boolean isSuperFree = false;
+			Vertex v1 = freeEdge.getFirst();
+			Vertex v2 = freeEdge.getSecond();
+			// Angle relative to the horizontal
+			double angle1 = Math.acos(Math.abs(v1.getX() - v2.getX()) / freeEdge.getWeight());
+			double angle2 = Math.PI - (Math.PI / 2) - angle1;
+			double angle3 = (Math.PI / 2) - angle2;
+			double xDiff = maxDistance * Math.sin(angle3);
+			double yDiff = maxDistance * Math.cos(angle3);
+			double x1 = v1.getX();
+			double y1 = v1.getY();
+			double x2 = v2.getX();
+			double y2 = v2.getY();
+			
+			if(y1 <= y2)
+			{
+				if(x1 <= x2)
+				{
+					path.moveTo(x1 - xDiff, y1 + yDiff);
+					path.lineTo(x2 - xDiff, y2 + yDiff);
+					path.lineTo(x2 + xDiff, y2 - yDiff);
+					path.lineTo(x1 + xDiff, y1 - yDiff);
+				}
+				else if(x2 <= x1)
+				{
+					path.moveTo(x2 + xDiff, y2 + yDiff);
+					path.lineTo(x1 + xDiff, y1 + yDiff);
+					path.lineTo(x1 - xDiff, y1 - yDiff);
+					path.lineTo(x2 - xDiff, y2 - yDiff);
+				}
+			}
+			else if(y2 <= y1)
+			{
+				if(x1 <= x2)
+				{
+					path.moveTo(x1 + xDiff, y1 + yDiff);
+					path.lineTo(x2 + xDiff, y2 + yDiff);
+					path.lineTo(x2 - xDiff, y2 - yDiff);
+					path.lineTo(x1 - xDiff, y1 - yDiff);
+				}
+				else if(x2 <= x1)
+				{
+					path.moveTo(x2 - xDiff, y2 + yDiff);
+					path.lineTo(x1 - xDiff, y1 + yDiff);
+					path.lineTo(x1 + xDiff, y1 - yDiff);
+					path.lineTo(x2 + xDiff, y2 - yDiff);
+				}
+			}
+
+			/*path.moveTo(x1 - xDiff, y1 + yDiff);
+			path.lineTo(x1 + xDiff, y1 - yDiff);
+			path.lineTo(x2 + xDiff, y2 - yDiff);
+			path.lineTo(x2 - xDiff, y2 + yDiff);
+			path.lineTo(x1 - xDiff, y1 + yDiff);*/
+			
+			System.out.println("Edges weight: " + freeEdge.getWeight());
+			System.out.println();
+			//if(allPaths.size() < 2)
+				allPaths.add(path);
+			for(int j = 0; j < vertices.size(); j++)
+			{
+				Vertex other = vertices.get(j);
+				if(v1 != other && v2 != other)
+				{
+					if(path.contains(other.getX(), other.getY()))
+					{
+						isSuperFree = false;
+						break;
+					}
+				}
+				isSuperFree = true;
+			}
+			path = new Path2D.Double();
+			if(isSuperFree)
+			{
+				numSuperFreeEdges++;
+			}
+		}
+		
+		System.out.println(numSuperFreeEdges);
 	}
 	
 	// Getters/setters
@@ -138,8 +244,12 @@ public final class UnitDiskGraph
 	public void setNumVertices(int n) { numVertices = n; }
 	
 	public ArrayList<Vertex> getVertices() { return vertices; }
+	public ArrayList<Edge> getEdges() { return edges; }
+	public ArrayList<Path2D> getAllPaths() { return allPaths; }
+	public double getMaxDistance() { return maxDistance; }
 	public int getNumVertices() { return numVertices; }
 	public int getNumEdges() { return numEdges; }
 	public int getNumFreeEdges() { return getNumEdges() - numIntersectingEdges; }
 	public int getNumIntersectingEdges() { return numIntersectingEdges; }
+	public int getNumSuperFreeEdges() { return numSuperFreeEdges; }
 }
