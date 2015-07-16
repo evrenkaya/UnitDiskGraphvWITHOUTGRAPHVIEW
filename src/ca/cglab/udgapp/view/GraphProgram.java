@@ -140,7 +140,6 @@ public class GraphProgram
 			TestPanel panel = new TestPanel(udg);
 			panel.setPreferredSize(new Dimension(1200, 900));
 			mainPanel.add(panel);
-			
 		}
 		else
 		{

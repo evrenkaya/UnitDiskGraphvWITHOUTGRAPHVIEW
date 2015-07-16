@@ -205,17 +205,8 @@ public final class UnitDiskGraph
 					path.lineTo(x2 + xDiff, y2 - yDiff);
 				}
 			}
-
-			/*path.moveTo(x1 - xDiff, y1 + yDiff);
-			path.lineTo(x1 + xDiff, y1 - yDiff);
-			path.lineTo(x2 + xDiff, y2 - yDiff);
-			path.lineTo(x2 - xDiff, y2 + yDiff);
-			path.lineTo(x1 - xDiff, y1 + yDiff);*/
 			
-			System.out.println("Edges weight: " + freeEdge.getWeight());
-			System.out.println();
-			//if(allPaths.size() < 2)
-				allPaths.add(path);
+			allPaths.add(path);
 			for(int j = 0; j < vertices.size(); j++)
 			{
 				Vertex other = vertices.get(j);
@@ -236,7 +227,6 @@ public final class UnitDiskGraph
 			}
 		}
 		
-		System.out.println(numSuperFreeEdges);
 	}
 	
 	// Getters/setters
