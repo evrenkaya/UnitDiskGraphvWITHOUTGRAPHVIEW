@@ -73,7 +73,7 @@ determineAllConnectedComponents() - calls the above method for each vertex in th
 \section{Testing}
 In this section, we explain how we tested Theorems 1 and 4 using our algorithm utility program.
 
-In order to test Theorem 1, we chose different values of $n$ and $k$ to input and then recorded the number of connected components with at least $k$ points that appeared above, below and at the distance threshold function using a small value $\varepsilon$. Theorem 1 is verified if there is \textbf{at least one} connected component on $k$ points \textbf{above} the distance threshold, and, if there are \textbf{no} connected components on $k$ points \textbf{below} the distance threshold. The following table shows our results for values of $n$ ranging from 50 - 10000.(Note: In this table, $a$ and $b$ are variables that replace $k$ and $2k-2$ respectively)
+In order to test Theorem 1, we chose different values of $n$ and $k$ to input and then recorded the number of connected components with at least $k$ points that appeared above, below and at the distance threshold function using a small value $\varepsilon$. Theorem 1 is verified if there is \textbf{at least one} connected component on $k$ points \textbf{above} the distance threshold, and, there are \textbf{no} connected components on $k$ points \textbf{below} the distance threshold. The following table shows our results for values of $n$ ranging from 50 - 10000.(Note: In this table, $a$ and $b$ are variables that replace $k$ and $2k-2$ respectively)
 
 \begin{center}
 
@@ -171,7 +171,7 @@ $n$ & $a=k$ & $b=2k-2$ & $\varepsilon$ & $r=n^{-(\frac{a}{b} + \varepsilon)}$ & 
 \end{center}
 
 \newpage
-In order to test Theorem 4, we set $a=2$ and $b=3$ as constants and only varied $n$ and $\varepsilon$. For each value of $n$, we recorded the number of intersecting edges within the disk graph that appeared above, below and at the distance threshold using $\varepsilon$. If there \textbf{exists} intersecting edges \textbf{above} the distance threshold, then the graph is not plane and this verifies Theorem 4. If there are \textbf{no} intersecting edges \textbf{below} the distance threshold, then the graph is plane and this also verifies Theorem 4. The following table shows our results for values of $n$ ranging from 50 - 10000.
+In order to test Theorem 4, we set $a=2$ and $b=3$ as constants and only varied $n$ and $\varepsilon$. For each value of $n$, we recorded the number of intersecting edges within the disk graph that appeared above, below and at the distance threshold using a small value $\varepsilon$. Theorem 4 is verified if there \textbf{exists} intersecting edges \textbf{above} the distance threshold, and, there are \textbf{no} intersecting edges \textbf{below} the distance threshold. The following table shows our results for values of $n$ ranging from 50 - 10000.
 
 
 \begin{center}
@@ -270,7 +270,7 @@ $n$ & $\varepsilon$ & $r=n^{-(\frac{2}{3} + \varepsilon)}$ & \# Intersecting edg
 
 \section{Conclusion}
 From Table 1, we see that for many combinations of $n$, $k$, and $\varepsilon$, there exists many connected components on $k$ points above the distance threshold
-and none below the threshold, both verifying Theorem 1. From Table 2, we see that for high values of $n$($\geq 1000$), there exists intersecting edges above the distance threshold and that there are no intersecting edges below the threshold. This verifies that $n^{-\frac{2}{3}}$ is a distance threshold for $\dg$ to be plane(i.e. Theorem 4).
+and none below the threshold, thus verifying Theorem 1. From Table 2, we see that for high values of $n$($\geq 1000$), there exists intersecting edges above the distance threshold and that there are no intersecting edges below the threshold. This verifies that $n^{-\frac{2}{3}}$ is a distance threshold for $\dg$ to be plane(i.e. Theorem 4).
 \\
 \\
 \begin{small}Acknowledgments: I would like to thank both of my supervisors, Professor Anil Maheshwari and PhD student Ahmad Biniaz for assisting me in creating this report.\end{small}
