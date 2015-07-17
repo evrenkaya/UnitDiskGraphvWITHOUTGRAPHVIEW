@@ -6,6 +6,10 @@
 
 \usepackage{longtable}
 \usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,     
+    urlcolor=blue,
+}
 
 \newcommand{\dg}{G(n,r)}
 
@@ -17,18 +21,18 @@
 
 \title{Algorithm Utility Tool Kit for Random Disk Graph Thresholds}
 \author{Evren Kaya}
-\date{July 16, 2015}
+\date{July 17, 2015}
 
 \begin{document}
 \maketitle
 
 \section{Introduction}
-Wireless networks are usually modelled as disk graphs in the plane. Given a set $P$ of points in the plane and a positive parameter $r$, the {\em disk graph} is the geometric graph with vertex set $P$ which has a straight-line edge between two points $p,q\in P$ if and only if $|pq|\le r$, where $|pq|$ denotes the Euclidean distance between $p$ and $q$. If $r=1$, then the disk graph is referred to as {\em unit disk graph}.  
+Wireless networks are usually modeled as disk graphs in the plane. Given a set $P$ of points in the plane and a positive parameter $r$, the {\em disk graph} is the geometric graph with vertex set $P$ which has a straight-line edge between two points $p,q\in P$ if and only if $|pq|\le r$, where $|pq|$ denotes the Euclidean distance between $p$ and $q$. If $r=1$, then the disk graph is referred to as {\em unit disk graph}.  
 A {\em random geometric graph}, denoted by $\dg$, is a geometric graph formed by choosing $n$ points independently and uniformly at random in a unit square; two points are connected by a straight-line edge if and only if they are at Euclidean distance at most $r$, where $r=r(n)$ is a function of $n$ and $r \to 0$ as $n\to \infty$.
 
 We say that two line segments in the plane {\em cross} each other if they have a point in common that is interior to both edges. Two line segments are {\em non-crossing} if they do not cross. Note that two non-crossing line segments may share an endpoint. A geometric graph is said to be {\em plane} if its edges do not cross, and {\em non-plane}, otherwise. A graph is {\em planar} if and only if it does not contain $K_5$ (the complete graph on 5 vertices) or $K_{3,3}$ (the complete bipartite graph on six vertices partitioned into two parts each of size $3$) as a minor. A {\em non-planar graph} is a graph which is not planar.
 
-In order to test Theorems 1 and 4 from Biniaz et al. [1], we developed a computer program that serves as an algorithm utility kit for disk graphs. (An executable form of this program can be downloaded by clicking \href{https://github.com/evrenkaya/UnitDiskGraphvWITHOUTGRAPHVIEW}{Here} (url: $https://github.com/evrenkaya/UnitDiskGraphvWITHOUTGRAPHVIEW$) by clicking on ``UnitDiskGraph.jar'' and then ``View Raw'')
+In order to test Theorems 1 and 4 from Biniaz et al. [1], we developed a computer program that serves as an algorithm utility kit for disk graphs. (An executable form of this program can be downloaded by clicking \href{https://github.com/evrenkaya/UnitDiskGraphvWITHOUTGRAPHVIEW}{here} (URL: $https://github.com/evrenkaya/UnitDiskGraphvWITHOUTGRAPHVIEW$) by clicking on ``UnitDiskGraph.jar'' and then ``View Raw'')
 
 The following is a restatement of Theorems 1 and 4 from Biniaz et al. [1]:
 \begin{customthm}{1}
@@ -43,7 +47,6 @@ $n^{-\frac{2}{3}}$ is a threshold for $\dg$ to be plane.
 
 In this paper, we explain some of the key implementation details of our program and then show our tests conducted for each theorem.
 
-%A disk graph, G is defined as a geometric graph that contains $n$ disks each with radius $r$ in the Euclidean plane. The center point of every disk is considered a vertex and two vertices, $u, v$ have a straight-line edge between them if the Euclidean distance between them, denoted by $|uv|$ is at most $r$. It is when $r=1$, that G is called a Unit Disk Graph.
 \newpage
 \section{Implementation Details}
 In this section, we describe the implementations of the key Java classes within our program.
@@ -57,7 +60,7 @@ A straight-line edge. Every edge has references to its endpoints, a boolean vari
 \subsection*{UnitDiskGraph}
 A random disk graph. Stores all vertices as an ArrayList\textless Vertex\textgreater, all edges as an ArrayList\textless Edge\textgreater, and the current distance threshold as a double. The following methods in this class are now described in more detail:\\ \\
 createNewRandomVertices() - creates a new set of vertices uniformly at random in the unit square\\ \\
-createNewConnectedEdges() - compares the Euclidean distance between every pair of vertices(Pythagoras' Theorem) and if two vertices are at most the distance threshold apart, then an edge is created with these two vertices as its endpoints\\ \\
+createNewConnectedEdges() - compares the Euclidean distance between every pair of vertices(Pythagoras' Theorem) and if two vertices are at most the distance threshold apart, then a new edge is created with these two vertices as its endpoints\\ \\
 determineIntersectingEdges() - checks every pair of edges to see if they intersect at a point other than any common endpoints. This is done using Java's Line2D.linesIntersect() method\\ \\
 determineSuperFreeEdges() - checks every pair of free edges to see if there are any other vertices inside of the super free edge rectangular region
 
@@ -66,12 +69,11 @@ A class representing the Breadth First Search algorithm. Contains a reference to
 getConnectedComponentWith(Vertex startingVertex) - starts breadth first search at the given vertex and returns the entire connected component containing this vertex as an ArrayList\textless Vertex\textgreater \\ \\
 determineAllConnectedComponents() - calls the above method for each vertex in the graph, keeping track of which connected components have been found already
 
-%Each vertex has x and y coordinates between 0 and 1 that are both of the double data type. A new set of $n$ randomly placed vertices is created by using Java's built in Random class, more specifically, each vertex is assigned random x and y coordinates from the method named nextDouble() within the Random class.
 
 \section{Testing}
 In this section, we explain how we tested Theorems 1 and 4 using our algorithm utility program.
 
-In order to test Theorem 1, we chose different values of $n$ and $k$ to input and then recorded the number of connected components with at least $k$ points that appeared above, below and at the distance threshold function using a small value $\varepsilon$. Theorem 1 is verified if there are \textbf{no} connected components on $k$ points \textbf{below} the distance threshold and if there is \textbf{at least one above} the distance threshold. The following table shows our results for values of $n$ ranging from 50 - 10000.(Note: In this table, $a$ and $b$ are variables that replace $k$ and $2k-2$ respectively)
+In order to test Theorem 1, we chose different values of $n$ and $k$ to input and then recorded the number of connected components with at least $k$ points that appeared above, below and at the distance threshold function using a small value $\varepsilon$. Theorem 1 is verified if there is \textbf{at least one} connected component on $k$ points \textbf{above} the distance threshold, and, if there are \textbf{no} connected components on $k$ points \textbf{below} the distance threshold. The following table shows our results for values of $n$ ranging from 50 - 10000.(Note: In this table, $a$ and $b$ are variables that replace $k$ and $2k-2$ respectively)
 
 \begin{center}
 
@@ -169,7 +171,7 @@ $n$ & $a=k$ & $b=2k-2$ & $\varepsilon$ & $r=n^{-(\frac{a}{b} + \varepsilon)}$ & 
 \end{center}
 
 \newpage
-In order to test Theorem 4, we set $a=2$ and $b=3$ as constants and only varied $n$ and $\varepsilon$. For each value of $n$, we recorded the number of intersecting edges within the disk graph that appeared above and below the distance threshold function using $\varepsilon$. If there are \textbf{no} intersecting edges \textbf{below} the distance threshold, then the graph is plane and this verifies Theorem 4. If there \textbf{exists} intersecting edges \textbf{above} the distance threshold, then the graph is not plane and this also verifies Theorem 4. The following table shows our results for values of $n$ ranging from 50 - 10000.
+In order to test Theorem 4, we set $a=2$ and $b=3$ as constants and only varied $n$ and $\varepsilon$. For each value of $n$, we recorded the number of intersecting edges within the disk graph that appeared above, below and at the distance threshold using $\varepsilon$. If there \textbf{exists} intersecting edges \textbf{above} the distance threshold, then the graph is not plane and this verifies Theorem 4. If there are \textbf{no} intersecting edges \textbf{below} the distance threshold, then the graph is plane and this also verifies Theorem 4. The following table shows our results for values of $n$ ranging from 50 - 10000.
 
 
 \begin{center}
@@ -267,11 +269,11 @@ $n$ & $\varepsilon$ & $r=n^{-(\frac{2}{3} + \varepsilon)}$ & \# Intersecting edg
 \end{center}
 
 \section{Conclusion}
-From Table 1, we see that for high values of $n$($\geq 1000$), there exists many connected components on $k$ points above the distance threshold
-and none below the threshold, both verifying Theorem 1. From Table 2, we see that for high values of $n$($\geq 1000$), there exists intersecting edges above the distance threshold and that there are no intersecting edges below the threshold. These both verify that $n^{-\frac{2}{3}}$ is a distance threshold for $\dg$ to be plane(Theorem 4).
+From Table 1, we see that for many combinations of $n$, $k$, and $\varepsilon$, there exists many connected components on $k$ points above the distance threshold
+and none below the threshold, both verifying Theorem 1. From Table 2, we see that for high values of $n$($\geq 1000$), there exists intersecting edges above the distance threshold and that there are no intersecting edges below the threshold. This verifies that $n^{-\frac{2}{3}}$ is a distance threshold for $\dg$ to be plane(i.e. Theorem 4).
 \\
 \\
-Acknowledgements: I would like to thank both Professor Anil Maheshwari and PhD student Ahmad Biniaz for assisting me in creating this report.
+\begin{small}Acknowledgments: I would like to thank both of my supervisors, Professor Anil Maheshwari and PhD student Ahmad Biniaz for assisting me in creating this report.\end{small}
 
 \bibliographystyle{abbrv}
 \bibliography{biblio}
